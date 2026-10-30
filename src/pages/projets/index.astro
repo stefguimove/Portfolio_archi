@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectList from '../../components/ProjectList.astro';
+import { projects, assetUrl, drawingCount } from '../../lib/content.js';
+---
+
+<BaseLayout title="Projets">
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h1 class="label">Projets</h1>
+        <p class="label">{projects.length} projets · {projects.reduce((n, p) => n + drawingCount(p), 0)} dessins</p>
+      </div>
+
+      <div class="cards">
+        {
+          projects.map((project) => (
+            <a class="card" href={`/projets/${project.slug}/`}>
+              <span class="card__media">
+                {project.assets[0] && (
+                  <img
+                    src={assetUrl(project.assets[0].slug, 'thumb')}
+                    width={project.assets[0].width}
+                    height={project.assets[0].height}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+              </span>
+              <span class="card__body">
+                <span class="label">{project.label}</span>
+                {!project.complete && <span class="badge">En cours</span>}
+                <span class="card__title" style="display:block">{project.title}</span>
+                {project.meta && <span class="index-list__meta" style="display:block">{project.meta}</span>}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+
+      <div style="margin-top: clamp(3rem, 7vw, 5rem)">
+        <div class="section__head">
+          <h2 class="label">Vue d'ensemble</h2>
+        </div>
+        <ProjectList projects={projects} />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

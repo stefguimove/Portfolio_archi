@@ -1,0 +1,33 @@
+---
+const { src, name, meta } = Astro.props;
+---
+
+<script is:inline>
+  // Doit etre defini avant que le premier <model-viewer> ne soit connecte.
+  self.ModelViewerElement = self.ModelViewerElement || {};
+  self.ModelViewerElement.dracoDecoderLocation = '/draco/';
+</script>
+
+<article class="model">
+  <model-viewer
+    src={src}
+    alt={`Modèle 3D : ${name}`}
+    camera-controls
+    touch-action="pan-y"
+    shadow-intensity="0.8"
+    exposure="1.05"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    loading="lazy"
+    reveal="auto"
+  />
+  <div class="model__body">
+    <h3 class="index-list__title" style="font-size:1rem">{name}</h3>
+    {meta && <p class="index-list__meta">{meta}</p>}
+    <slot />
+  </div>
+</article>
+
+<script>
+  import '@google/model-viewer';
+</script>

@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectList from '../components/ProjectList.astro';
+import { meta, cover, transition, projects, assetUrl } from '../lib/content.js';
+
+const closing = transition.paragraphs[0]?.text ?? '';
+const closingExcerpt = closing.split(/(?<=[.!?])\s+/).slice(0, 2).join(' ');
+---
+
+<BaseLayout>
+  <section class="cover">
+    {
+      cover.image && (
+        <img
+          class="cover__image"
+          src={assetUrl(cover.image)}
+          alt=""
+          aria-hidden="true"
+          fetchpriority="high"
+        />
+      )
+    }
+    <div class="wrap cover__inner">
+      <p class="label">{meta.school} · {meta.year}</p>
+      <h1 class="display cover__title">Portfolio</h1>
+      <p class="cover__meta">
+        <span>{meta.author}</span>
+        <span>{projects.length} projets</span>
+        <span>{meta.level}</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--alt" aria-labelledby="titre-projets">
+    <div class="wrap">
+      <div class="section__head">
+        <h2 class="label" id="titre-projets">Projets</h2>
+        <a class="label" href="/projets/">Tous les projets</a>
+      </div>
+      <ProjectList projects={projects} />
+    </div>
+  </section>
+
+  {
+    closingExcerpt && (
+      <section class="section" aria-labelledby="titre-transition">
+        <div class="wrap">
+          <div class="section__head">
+            <h2 class="label" id="titre-transition">Transition</h2>
+          </div>
+          <p class="prose project-body__lead">{closingExcerpt}</p>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>

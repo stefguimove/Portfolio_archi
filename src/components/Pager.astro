@@ -1,0 +1,26 @@
+---
+const { previous, next } = Astro.props;
+---
+
+{
+  (previous || next) && (
+    <nav class="pager" aria-label="Navigation entre projets">
+      <div class="pager__previous">
+        {previous && (
+          <a href={`/projets/${previous.slug}/`}>
+            <span class="label">Projet précédent</span>
+            <strong>{previous.title}</strong>
+          </a>
+        )}
+      </div>
+      <div class="pager__next">
+        {next && (
+          <a href={`/projets/${next.slug}/`}>
+            <span class="label">Projet suivant</span>
+            <strong>{next.title}</strong>
+          </a>
+        )}
+      </div>
+    </nav>
+  )
+}

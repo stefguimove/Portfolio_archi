@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ModelViewer from '../components/ModelViewer.astro';
+import { models } from '../lib/content.js';
+---
+
+<BaseLayout title="Modèles 3D">
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h1 class="label">Modèles 3D</h1>
+        <p class="label">{models.length} modèle{models.length > 1 ? 's' : ''}</p>
+      </div>
+
+      {
+        models.length > 0 ? (
+          <div class="models">
+            {models.map((model) => (
+              <ModelViewer src={model.src} name={model.title} meta={model.meta}>
+                {model.projects.length > 0 && (
+                  <p class="index-list__meta">
+                    Projet :{' '}
+                    {model.projects.map((project, index) => (
+                      <>
+                        {index > 0 && ', '}
+                        <a href={`/projets/${project.slug}/`}>{project.title}</a>
+                      </>
+                    ))}
+                  </p>
+                )}
+              </ModelViewer>
+            ))}
+          </div>
+        ) : (
+          <p class="notice">
+            Aucun modèle pour l'instant. Dépose tes fichiers dans <strong>design/models/</strong>
+            {' '}puis lance <strong>python3 tools/build_3d.py</strong> : ils seront convertis en
+            GLB optimisé et affichés ici.
+          </p>
+        )
+      }
+
+      <div class="notice" style="margin-top: clamp(2rem, 4vw, 3rem)">
+        <p style="margin:0 0 0.6rem">
+          <strong>Formats acceptés :</strong> OBJ, FBX, DAE, 3DS, STL, PLY, GLB/glTF, BLEND.
+        </p>
+        <p style="margin:0">
+          La conversion applique une compression Draco, décodée par un décodeur hébergé
+          localement (aucun appel à un CDN externe). Les fichiers
+          <strong>3ds Max (.max) et Cinema 4D (.c4d)</strong> ne sont pas lisibles :
+          il faut les exporter en FBX ou OBJ depuis le logiciel d'origine.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

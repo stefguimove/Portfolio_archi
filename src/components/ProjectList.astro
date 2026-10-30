@@ -1,0 +1,23 @@
+---
+import { drawingLabel } from '../lib/content.js';
+
+const { projects } = Astro.props;
+---
+
+<ul class="index-list">
+  {
+    projects.map((project) => (
+      <li class="index-list__item">
+        <a class="index-list__link" href={`/projets/${project.slug}/`}>
+          <span class="label">{project.label}</span>
+          <span>
+            <span class="index-list__title">{project.title}</span>
+            {!project.complete && <span class="badge">En cours</span>}
+            {project.meta && <span class="index-list__meta">{project.meta}</span>}
+          </span>
+          <span class="index-list__count">{drawingLabel(project)}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

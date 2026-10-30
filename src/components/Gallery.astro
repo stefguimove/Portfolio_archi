@@ -1,0 +1,90 @@
+---
+import { assetUrl, captionFor } from '../lib/content.js';
+
+const { assets, label = 'Dessins du projet' } = Astro.props;
+
+const items = assets.map((asset) => ({
+  ...asset,
+  caption: asset.caption ?? captionFor(asset),
+}));
+---
+
+<div class="gallery" role="group" aria-label={label}>
+  {
+    items.map((item, index) => {
+      const ratio = item.width / item.height;
+      const orientation = item.orientation ?? 'auto';
+      const solo =
+        orientation === 'pleine-largeur' ||
+        (orientation === 'auto' && (ratio > 1.9 || ratio < 0.95));
+      const portrait = orientation === 'portrait';
+      const alt = item.caption || `${label} — image ${index + 1}`;
+      return (
+        <figure class:list={['figure', solo && 'figure--solo', portrait && 'figure--portrait']}>
+          <button
+            class="figure__button"
+            type="button"
+            data-lightbox
+            data-full={assetUrl(item.slug)}
+            data-caption={item.caption}
+            aria-label={`Agrandir : ${alt}`}
+          >
+            <img
+              src={assetUrl(item.slug)}
+              width={item.width}
+              height={item.height}
+              alt={item.caption ? item.caption : ''}
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
+          {item.caption && <figcaption>{item.caption}</figcaption>}
+        </figure>
+      );
+    })
+  }
+</div>
+
+<dialog class="lightbox" id="lightbox" aria-label="Image agrandie">
+  <div class="lightbox__stage">
+    <img class="lightbox__image" alt="" />
+  </div>
+  <button class="lightbox__close" type="button">Fermer</button>
+  <p class="lightbox__caption"></p>
+</dialog>
+
+<script>
+  const dialog = document.getElementById('lightbox');
+
+  if (dialog instanceof HTMLDialogElement) {
+    const image = dialog.querySelector('.lightbox__image');
+    const caption = dialog.querySelector('.lightbox__caption');
+
+    document.addEventListener('click', (event) => {
+      const trigger = event.target instanceof Element && event.target.closest('[data-lightbox]');
+      if (!(trigger instanceof HTMLElement)) return;
+
+      const source = trigger.dataset.full ?? '';
+      const text = trigger.dataset.caption ?? '';
+
+      if (image instanceof HTMLImageElement) {
+        image.src = source;
+        image.alt = text;
+      }
+      if (caption instanceof HTMLElement) caption.textContent = text;
+
+      dialog.showModal();
+    });
+
+    dialog.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target instanceof Element && target.closest('.lightbox__image')) return;
+      dialog.close();
+    });
+
+    // Fermeture au clavier, sans dependre du comportement natif du navigateur.
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && dialog.open) dialog.close();
+    });
+  }
+</script>

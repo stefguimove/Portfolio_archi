@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { meta, presentation } from '../lib/content.js';
+---
+
+<BaseLayout title="Présentation">
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h1 class="label">Présentation</h1>
+        <p class="label">{meta.author} — {meta.school}</p>
+      </div>
+
+      <div class="prose">
+        {presentation.paragraphs.map((paragraph) => <p>{paragraph.text}</p>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

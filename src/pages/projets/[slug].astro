@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Gallery from '../../components/Gallery.astro';
+import ModelViewer from '../../components/ModelViewer.astro';
+import Pager from '../../components/Pager.astro';
+import { projects, neighbours, drawingLabel } from '../../lib/content.js';
+
+export function getStaticPaths() {
+  return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { previous, next } = neighbours(project.slug);
+const [studio, ...team] = project.meta.split(' · ');
+const [lead, ...rest] = project.paragraphs;
+---
+
+<BaseLayout title={project.title} description={`${project.title} — ${project.meta}`}>
+  <article>
+    <div class="wrap project-intro">
+      <div class="project-intro__title">
+        <p class="label">Projet {project.label}</p>
+        <h1 class="display project-head__title">{project.title}</h1>
+      </div>
+
+      <div class="project-intro__aside cartouche">
+        <dl>
+          <dt>Studio</dt>
+          <dd>{studio || '—'}</dd>
+          {team.length > 0 && (
+            <>
+              <dt>Équipe</dt>
+              <dd>{team.join(' · ')}</dd>
+            </>
+          )}
+          <dt>Dessins</dt>
+          <dd>{drawingLabel(project)}</dd>
+          <dt>Statut</dt>
+          <dd>{project.complete ? 'Terminé' : 'En cours'}</dd>
+          {
+            project.models.length > 0 && (
+              <>
+                <dt>3D</dt>
+                <dd>{project.models.length} modèle{project.models.length > 1 ? 's' : ''}</dd>
+              </>
+            )
+          }
+        </dl>
+      </div>
+
+      {
+        (lead || rest.length > 0) && (
+          <div class="project-intro__text prose">
+            {lead && <p class="project-body__lead">{lead.text}</p>}
+            {rest.map((paragraph) => (
+              <p>{paragraph.text}</p>
+            ))}
+          </div>
+        )
+      }
+    </div>
+
+    <section class="wrap" aria-label="Dessins">
+      <Gallery assets={project.assets} label={`Dessins de ${project.title}`} />
+    </section>
+
+    {
+      project.models.length > 0 && (
+        <section class="section" aria-labelledby="titre-modeles">
+          <div class="wrap">
+            <div class="section__head">
+              <h2 class="label" id="titre-modeles">
+                {project.models.length > 1 ? 'Modèles 3D' : 'Modèle 3D'}
+              </h2>
+              <a class="label" href="/modeles/">Tous les modèles</a>
+            </div>
+            <div class="models">
+              {project.models.map((model) => (
+                <ModelViewer src={model.src} name={model.title} meta={model.meta} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
+
+    <div class="wrap">
+      <Pager previous={previous} next={next} />
+    </div>
+  </article>
+</BaseLayout>

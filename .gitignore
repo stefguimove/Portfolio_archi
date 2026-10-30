@@ -1,0 +1,41 @@
+# build output
+dist/
+# generated types
+.astro/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# jetbrains setting folder
+.idea/
+
+# Sources de design : volumineuses (192 Mo) et binaires, non versionnees
+design/
+
+# Artefacts regeneres par tools/ (voir README)
+public/assets/
+public/models/
+public/draco/
+content/.cache/
+content/manifest.json
+content/pages/
+src/data/site.json
+src/data/models.json
+
+# Python
+__pycache__/
+*.pyc

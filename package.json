@@ -1,0 +1,25 @@
+{
+  "name": "portfolio-lison-cuccuru",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "content": "python3 tools/build_content.py",
+    "content:check": "python3 tools/build_content.py --check",
+    "content:watch": "python3 tools/build_content.py --watch",
+    "content:new": "python3 tools/build_content.py --new",
+    "predev": "npm run content",
+    "dev": "astro dev",
+    "prebuild": "npm run content",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@google/model-viewer": "^4.4.0",
+    "astro": "^7.3.8"
+  },
+  "description": "Portfolio d'architecture de Lison Cuccuru"
+}

@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import { meta } from '../lib/content.js';
+
+const { title, description } = Astro.props;
+const pageTitle = title ? `${title} — ${meta.author}` : `${meta.title} — ${meta.author}`;
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+
+const nav = [
+  { href: '/', label: 'Accueil' },
+  { href: '/presentation', label: 'Présentation' },
+  { href: '/projets', label: 'Projets' },
+  { href: '/modeles', label: '3D' },
+];
+
+const isCurrent = (href) => (href === '/' ? path === '/' : path.startsWith(href));
+---
+
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description ?? meta.description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description ?? meta.description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <a class="skip-link" href="#contenu">Aller au contenu</a>
+
+    <header class="site-header">
+      <div class="wrap site-header__inner">
+        <a class="site-header__name" href="/">{meta.author}</a>
+        <nav class="site-nav" aria-label="Navigation principale">
+          {
+            nav.map((item) => (
+              <a href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main id="contenu">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__inner">
+        <p class="label">
+          {meta.author} — {meta.school}
+        </p>
+        <p class="label">{meta.year} · Portfolio d'architecture</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,661 @@
+/* ---------------------------------------------------------------------------
+   Systeme de design derive du document InDesign (couleurs prelevees sur le PDF,
+   typographie et hierarchie reprises des styles de planches).
+   --------------------------------------------------------------------------- */
+
+:root {
+  --ink: #100f0f;
+  --ink-soft: #55524e;
+  --paper: #ffffff;
+  --paper-alt: #f1f0ee;
+  --rule: #d9d7d3;
+  --accent: #375897;
+
+  --font-display: "Helvetica Neue", Helvetica, Arial, "Liberation Sans", system-ui, sans-serif;
+  --font-narrow: "Arial Narrow", "Helvetica Neue Condensed", "Liberation Sans Narrow",
+    "Roboto Condensed", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --step-0: clamp(1rem, 0.97rem + 0.15vw, 1.08rem);
+  --step-1: clamp(1.2rem, 1.13rem + 0.35vw, 1.45rem);
+  --step-3: clamp(2rem, 1.6rem + 2vw, 3.4rem);
+  --step-4: clamp(2.6rem, 1.6rem + 5vw, 6rem);
+
+  --gutter: clamp(1.25rem, 4vw, 4.5rem);
+  --measure: 66ch;
+  --rule-thin: 1px solid var(--rule);
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.62;
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* --- primitives typographiques ------------------------------------------- */
+
+.label {
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-weight: 700;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  color: var(--ink-soft);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 0.98;
+  margin: 0;
+}
+
+.prose {
+  max-width: var(--measure);
+}
+
+.prose p {
+  margin: 0 0 1.1em;
+  text-wrap: pretty;
+}
+
+.prose p:last-child {
+  margin-bottom: 0;
+}
+
+.wrap {
+  width: min(100% - 2 * var(--gutter), 1440px);
+  margin-inline: auto;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 100;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.7em 1.1em;
+  transition: top 0.2s var(--ease);
+}
+
+.skip-link:focus {
+  top: 0.6rem;
+}
+
+/* --- en-tete et pied de page --------------------------------------------- */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: color-mix(in srgb, var(--paper) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: var(--rule-thin);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-block: 0.85rem;
+}
+
+.site-header__name {
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.site-nav {
+  display: flex;
+  gap: clamp(0.9rem, 2.5vw, 2rem);
+}
+
+.site-nav a {
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  padding-block: 0.2rem;
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+.site-footer {
+  border-top: var(--rule-thin);
+  margin-top: clamp(4rem, 10vw, 9rem);
+  padding-block: 2.5rem 3.5rem;
+  color: var(--ink-soft);
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+/* --- couverture ---------------------------------------------------------- */
+
+.cover {
+  position: relative;
+  min-height: min(88vh, 900px);
+  display: flex;
+  align-items: flex-end;
+  background: var(--ink);
+  overflow: hidden;
+}
+
+.cover__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.55;
+}
+
+.cover__inner {
+  position: relative;
+  padding-block: clamp(2.5rem, 8vh, 6rem);
+  color: var(--paper);
+}
+
+.cover__title {
+  font-size: var(--step-4);
+}
+
+.cover__meta {
+  margin-top: 1.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 2.2rem;
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.cover .label {
+  color: color-mix(in srgb, var(--paper) 72%, transparent);
+}
+
+/* --- sections ------------------------------------------------------------ */
+
+.section {
+  padding-block: clamp(3rem, 8vw, 7rem);
+}
+
+.section--alt {
+  background: var(--paper-alt);
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.1rem;
+  border-bottom: var(--rule-thin);
+  margin-bottom: clamp(1.6rem, 4vw, 3rem);
+}
+
+/* --- sommaire des projets ----------------------------------------------- */
+
+.index-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: var(--rule-thin);
+}
+
+.index-list__item {
+  border-bottom: var(--rule-thin);
+}
+
+.index-list__link {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: baseline;
+  gap: 1rem 1.5rem;
+  padding-block: clamp(1rem, 2.5vw, 1.7rem);
+  transition: background 0.25s var(--ease), padding-inline 0.25s var(--ease);
+}
+
+.index-list__link:hover {
+  background: var(--paper-alt);
+  padding-inline: 0.9rem;
+}
+
+.index-list__title {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  font-size: var(--step-1);
+  line-height: 1.1;
+}
+
+.index-list__meta {
+  display: block;
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+  margin-top: 0.35rem;
+}
+
+.index-list__count {
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15em 0.5em;
+  border: 1px solid var(--rule);
+  color: var(--ink-soft);
+  vertical-align: middle;
+}
+
+/* --- cartes de projet --------------------------------------------------- */
+
+.cards {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+}
+
+.card__media {
+  display: block;
+  aspect-ratio: 297 / 210;
+  background: var(--paper-alt);
+  overflow: hidden;
+}
+
+.card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s var(--ease);
+}
+
+.card:hover .card__media img {
+  transform: scale(1.03);
+}
+
+.card__body {
+  padding-top: 0.9rem;
+}
+
+.card__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  line-height: 1.15;
+  margin: 0.3rem 0 0;
+}
+
+/* --- page projet -------------------------------------------------------- */
+
+.project-intro {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2rem);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    'title'
+    'aside'
+    'text';
+  padding-block: clamp(2rem, 6vw, 4.5rem) clamp(2rem, 5vw, 3.5rem);
+  border-bottom: var(--rule-thin);
+}
+
+.project-intro__title {
+  grid-area: title;
+}
+
+.project-intro__aside {
+  grid-area: aside;
+}
+
+.project-intro__text {
+  grid-area: text;
+}
+
+@media (min-width: 900px) {
+  .project-intro {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-areas:
+      'title aside'
+      'text  aside';
+    align-items: start;
+  }
+}
+
+.project-head__title {
+  font-size: var(--step-3);
+  margin-top: 0.5rem;
+}
+
+.cartouche {
+  border: var(--rule-thin);
+  padding: 1.1rem 1.3rem;
+}
+
+.cartouche dl {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+}
+
+.cartouche dt {
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  padding-top: 0.15em;
+}
+
+.cartouche dd {
+  margin: 0;
+  font-size: 0.92rem;
+}
+
+.project-body__lead {
+  font-size: var(--step-1);
+  line-height: 1.45;
+}
+
+/* --- galerie ------------------------------------------------------------ */
+
+.gallery {
+  display: grid;
+  gap: clamp(1.2rem, 3vw, 2.2rem);
+  grid-template-columns: minmax(0, 1fr);
+  grid-auto-flow: dense;
+  align-items: start;
+}
+
+@media (min-width: 760px) {
+  .gallery {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.figure {
+  margin: 0;
+  min-width: 0;
+}
+
+/* Dessins tres larges ou tres hauts : pleine largeur, sur une reserve neutre,
+   pour eviter les colonnes disproportionnees. */
+.figure--solo {
+  grid-column: 1 / -1;
+}
+
+.figure__button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: var(--paper-alt);
+  cursor: zoom-in;
+  position: relative;
+}
+
+.figure__button img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.figure--solo .figure__button img {
+  max-height: 76vh;
+}
+
+/* Portrait : largeur d'une colonne, hauteur contenue et centrage. */
+.figure--portrait .figure__button img {
+  width: auto;
+  max-width: 100%;
+  max-height: 80vh;
+  margin-inline: auto;
+}
+
+.figure__button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  transition: background 0.25s var(--ease);
+}
+
+.figure__button:hover::after {
+  background: color-mix(in srgb, var(--ink) 6%, transparent);
+}
+
+.figure figcaption {
+  margin-top: 0.6rem;
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+}
+
+/* --- visionneuse -------------------------------------------------------- */
+
+.lightbox {
+  border: 0;
+  padding: 0;
+  background: transparent;
+  max-width: 100vw;
+  max-height: 100vh;
+  width: 100%;
+  height: 100%;
+}
+
+.lightbox::backdrop {
+  background: color-mix(in srgb, var(--ink) 94%, transparent);
+}
+
+.lightbox__stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  padding: clamp(1rem, 4vw, 3rem);
+  position: relative;
+  z-index: 1;
+}
+
+.lightbox__image {
+  max-width: 100%;
+  max-height: 88vh;
+  width: auto;
+  object-fit: contain;
+}
+
+.lightbox__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--paper) 40%, transparent);
+  color: var(--paper);
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.5em 0.9em;
+  cursor: pointer;
+}
+
+.lightbox__caption {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  color: color-mix(in srgb, var(--paper) 78%, transparent);
+  font-family: var(--font-narrow);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.72rem;
+  text-align: center;
+  padding-inline: 1rem;
+}
+
+/* --- navigation entre projets ------------------------------------------- */
+
+.pager {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+  border-top: var(--rule-thin);
+  margin-top: clamp(3rem, 7vw, 5rem);
+  padding-top: 1.5rem;
+}
+
+@media (min-width: 720px) {
+  .pager {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pager__next {
+    text-align: right;
+  }
+}
+
+.pager a {
+  display: block;
+  padding: 0.4rem 0;
+}
+
+.pager strong {
+  display: block;
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 1.05rem;
+  margin-top: 0.25rem;
+}
+
+/* --- visionneuse 3D ----------------------------------------------------- */
+
+.models {
+  display: grid;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr));
+}
+
+.model {
+  border: var(--rule-thin);
+}
+
+.model model-viewer {
+  display: block;
+  width: 100%;
+  height: clamp(320px, 52vh, 560px);
+  background: var(--paper-alt);
+}
+
+.model__body {
+  padding: 1rem 1.2rem 1.2rem;
+  border-top: var(--rule-thin);
+}
+
+.model__body a {
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  text-decoration-color: var(--rule);
+  transition: text-decoration-color 0.2s var(--ease);
+}
+
+.model__body a:hover {
+  text-decoration-color: var(--ink);
+}
+
+.notice {
+  border: 1px dashed var(--rule);
+  padding: 1.2rem 1.4rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+}
+
+.notice strong {
+  color: var(--ink);
+}
