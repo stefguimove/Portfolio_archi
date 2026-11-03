@@ -1,17 +1,6 @@
-# Portfolio — Lison Cuccuru
+# Portfolio — Architecture
 
-Site web du portfolio d'architecture de Lison Cuccuru (ENSA Versailles, 2026), réalisé à
-partir du document InDesign d'origine.
-
-## Origine du contenu
-
-Le portfolio existe d'abord comme document InDesign de 42 pages (A4 paysage) :
-`design/Portfolio 2026.indd`, accompagné de son export IDML, d'un PDF et du dossier
-`Links/` contenant les 73 dessins originaux (192 Mo).
-
-Un IDML **ne contient aucune image** : les `<Link>` pointent vers des fichiers externes
-(ici des chemins `C:/Users/...`, inutilisables tels quels). Le dossier `Links/` est donc
-indispensable ; le PDF sert de référence visuelle.
+Site web du portfolio d'architecture.
 
 ## Mise en route
 
