@@ -25,7 +25,7 @@ images:
   orientation: auto
 - fichier: 07-img-8775.webp
   source: IMG-8775.jpeg
-  orientation: auto
+  orientation: 90
 - fichier: 08-img-8777.webp
   source: IMG-8777.jpeg
   orientation: auto
